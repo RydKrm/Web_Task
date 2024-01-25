@@ -2,7 +2,6 @@ import axios from 'axios';
 import  { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-import SocialLogIn from './SocailLogin';
 import { AuthContext } from '../../context/AuthContext';
 
 const Login = () => {
@@ -14,13 +13,17 @@ const Login = () => {
 
   const handleLogin = () => {
     if (email.length && password.length) {
-      axios.post('http://localhost:5000/login',{email,password})
+      axios.post('https://book-treasure-server-app.vercel.app/users',{email,password})
       .then(res=>{
         if(res.data){
         createUser(email, password)
       .then((result) => {
         navigate('/')
         console.log(result);
+      })
+      .catch(error =>{
+        alert('email already exits ');
+        console.log(error)
       })
         } else {
           alert('user already exits ');
@@ -30,6 +33,7 @@ const Login = () => {
     } else {
       setError('Invalid email or password');
     }
+    
   };
 
       const handleGoogleSignIn = () => {
@@ -38,7 +42,7 @@ const Login = () => {
               const loggedInUser = result.user;
               console.log(loggedInUser)
               const saveUser = { name: loggedInUser.displayName, email: loggedInUser.email, photoURL: loggedInUser.photoURL,role:'user' }
-              return fetch('http://localhost:5000/users', {
+              return fetch('https://book-treasure-server-app.vercel.app/users', {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json'
@@ -58,10 +62,6 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-md shadow-md md:w-96 w-full">
         <h2 className="text-3xl font-bold mb-4 text-center">Login</h2>
-          <div className="flex flex-row items-center justify-center lg:justify-start">
-              <p className="mb-0 mr-4 text-lg">Sign in with</p>
-              <SocialLogIn></SocialLogIn>
-          </div>
         <form>
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium text-gray-600">
